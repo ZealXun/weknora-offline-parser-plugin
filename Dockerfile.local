@@ -1,0 +1,4 @@
+FROM scratch
+COPY dist/weknora-offline-parser-plugin /weknora-offline-parser-plugin
+USER 65532:65532
+ENTRYPOINT ["/weknora-offline-parser-plugin"]

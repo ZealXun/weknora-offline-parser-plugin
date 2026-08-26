@@ -1,0 +1,5 @@
+.git
+.github
+*.log
+coverage.out
+weknora-offline-parser-plugin

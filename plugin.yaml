@@ -1,0 +1,50 @@
+apiVersion: weknora.io/v1
+kind: Plugin
+metadata:
+  id: io.zealxun.parser.offline
+  name: ZealXun 离线文档解析器
+  description: 在隔离容器中离线解析 Markdown、纯文本和 HTML，并用于验证未授权出站请求的拦截与审计
+  version: 0.1.0
+spec:
+  protocolVersion: 1.0.0
+  weknoraVersion: ">=0.2.0"
+  image: ghcr.io/zealxun/weknora-offline-parser-plugin:0.1.0
+  types:
+    - document_parser
+  capabilities:
+    - file_type:md
+    - file_type:markdown
+    - file_type:txt
+    - file_type:html
+    - file_type:htm
+  icon: file-search
+  defaultTimeout: 2m
+  config:
+    schema:
+      $schema: https://json-schema.org/draft/2020-12/schema
+      type: object
+      additionalProperties: false
+      properties:
+        preserve_front_matter:
+          type: boolean
+          title: 保留 Markdown Front Matter
+          description: 关闭后会移除文档开头由三个短横线包围的 YAML Front Matter
+          default: true
+        html_title_as_heading:
+          type: boolean
+          title: 将 HTML 标题作为一级标题
+          description: HTML 中存在 title 且正文没有一级标题时，将 title 写入解析结果
+          default: true
+        outbound_probe:
+          type: boolean
+          title: 执行未授权联网探针
+          description: 仅用于隔离验证；开启后解析器会尝试访问外网，预期被 plugin-runtime 拦截并记录审计事件
+          default: false
+      required: []
+    secretFields: []
+  permissions:
+    network: false
+    allowedHosts: []
+    dataAccess:
+      - document_content
+      - document_metadata
