@@ -1,0 +1,39 @@
+name: 插件兼容性检查
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出插件仓库
+        uses: actions/checkout@v4
+        with:
+          path: plugin
+
+      - name: 检出 WeKnora
+        uses: actions/checkout@v4
+        with:
+          repository: xyz2781790037/WeKnora
+          ref: feat/plugin-framework
+          path: WeKnora
+
+      - name: 安装 Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+          cache: false
+
+      - name: 检查插件兼容性
+        working-directory: WeKnora
+        run: >-
+          go run ./cmd/pluginctl compat
+          --manifest ../plugin/plugin.yaml
+          --weknora-version 0.2.0

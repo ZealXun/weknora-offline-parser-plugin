@@ -37,6 +37,13 @@ jobs:
           manifest_version="$(awk '/^  version:/{print $2; exit}' plugin.yaml)"
           test "v${manifest_version}" = "${GITHUB_REF_NAME}"
 
+      - name: 检查插件兼容性
+        working-directory: WeKnora
+        run: >-
+          go run ./cmd/pluginctl compat
+          --manifest ../plugin/plugin.yaml
+          --weknora-version 0.2.0
+
       - name: 运行测试
         working-directory: plugin
         run: go test ./...
